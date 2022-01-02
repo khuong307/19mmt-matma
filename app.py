@@ -19,9 +19,15 @@ def addNewUser(info):
 
 #khai báo hàm kiểm tra username và password
 def checkUser(username, password, userList):
-    print(userList)
     for user in userList:
         if user[0] == username and user[1] == password:
+            return 1  
+    return 0
+
+#khai báo hàm kiểm tra username => username ko được trùng.
+def checkUsername(username, userList):
+    for user in userList:
+        if user[0] == username:
             return 1  
     return 0
 
@@ -37,14 +43,13 @@ def login():
     if request.method == 'POST' and 'Username' in request.form and 'Password' in request.form:
         username = request.form['Username']
         password = request.form['Password']
-        print(username)
-        print(password)
         userList = readUserList()
         isUser = checkUser(username, password, userList)
         if (isUser == 1):
-            print(True)
             return redirect(url_for("homeLogin")) #đăng nhập thành công -> vào trang chủ homeLogin.
-    return render_template('login.html')
+        else:
+            return render_template('login.html', err_message = True)
+    return render_template('login.html', err_message = False)
 
 #khai báo home (login thành công)
 @app.route('/homeLogin', methods=['GET', 'POST'])
@@ -57,13 +62,19 @@ def register():
     if request.method == 'POST' and 'Username' in request.form and 'Password' in request.form and 'ConfirmPassword' in request.form:
         username = request.form['Username']
         password = request.form['Password']
+        confirmPass = request.form['ConfirmPassword']
+        if confirmPass != password:
+            return render_template('register.html', err = True, message = "Mật khẩu không khớp!")
         userList = readUserList()
-        isUser = checkUser(username, password, userList)
+        isUser = checkUsername(username, userList)
+        
         id = len(userList) + 1
         if (isUser == 0):
             addNewUser(username+'-'+password+'-'+str(id))
             return redirect(url_for("login")) #nếu đăng ký thành công, nhảy sang login
-    return render_template('register.html')
+        else:
+            return render_template('register.html', err = True, message = "Username đã tồn tại!")
+    return render_template('register.html', err = False)
   
 
 if __name__ =="__main__":

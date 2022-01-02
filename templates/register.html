@@ -116,6 +116,14 @@
 <body>
   <div class="container-fluid">
     <div class="container" >
+        {% if err %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="text-align: center">
+            <strong>Lỗi: </strong>{{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
         <div class="title"style="text-align: center; background: -webkit-linear-gradient(#71b7e6, #39d48c);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-bottom: 5px">Đăng ký</div>
         <div class="row justify-content-center">
