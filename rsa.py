@@ -2,9 +2,7 @@ from random import randrange, getrandbits
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-import cv2
-
-my_img = mpimg.imread('static/uploads/minimize23/minimize23_1.jpg')
+from PIL import Image
 
 def power(a,d,n):
   ans=1
@@ -50,13 +48,9 @@ def is_prime(N,K):
   
 
 
-
+#get P
 def generate_prime_candidate(length):
-  # generate random bits
   p = getrandbits(length)
-  # apply a mask to set MSB and LSB to 1
-  # Set MSB to 1 to make sure we have a Number of 1024 bits.
-  # Set LSB to 1 to make sure we get a Odd Number.
   p |= (1 << length - 1) | 1
   return p
 
@@ -117,37 +111,52 @@ def gcdExtended(E,eulerTotient):
   return D
 
 def InitENC(my_img):
-  row,col=my_img.shape[0],my_img.shape[1]
-  enc = [[0 for x in range(row)] for y in range(col)]
+  enc = np.zeros([my_img.shape[0],my_img.shape[1], 3])
   return enc
 
 
 
 #Step 5: Encryption
-def EncryptionIMG(N, E, my_img, enc):
-  for i in range(0,my_img.shape[0]):
-    for j in range(0,my_img.shape[1]):
+def EncryptionIMG(N, E, my_img, enc, npyFile):
+  for i in range(my_img.shape[0]//5,my_img.shape[0]*4//5):
+    for j in range(my_img.shape[1]//5,my_img.shape[1]*4//5):
       r,g,b=my_img[i,j]
       C1=power(r,E,N)
       C2=power(g,E,N)
       C3=power(b,E,N)
-      enc[i][j]=[C1,C2,C3]
+      enc[i][j]=[C1,C2,C3] 
+
       C1=C1%256
       C2=C2%256
       C3=C3%256
       my_img[i,j]=[C1,C2,C3]
-  plt.show()
+  np.save(npyFile, enc)
 
 
 #Step 6: Decryption
 def DecryptionIMIG(N, D, my_img, enc):
-  for i in range(0,my_img.shape[0]):
-    for j in range(0,my_img.shape[1]):
+  for i in range(my_img.shape[0]//5,my_img.shape[0]*4//5):
+    for j in range(my_img.shape[1]//5,my_img.shape[1]*4//5):
       r,g,b=enc[i][j]
       M1=power(r,D,N)
       M2=power(g,D,N)
       M3=power(b,D,N)
       my_img[i,j]=[M1,M2,M3]
+  
+
+# my_img = mpimg.imread('static/uploads/anomo/anomo_1_enc.jpg')
+# enc = InitENC(my_img)
+# EncryptionIMG(323, 11, my_img, enc, 'static/uploads/anomo/anomo_1_sub.npy')
+
+# data = Image.fromarray(my_img)
+# data.save('static/uploads/anomo/anomo_1_enc.jpg')
+
+# enc = np.load('static/uploads/anomo/anomo_1_sub.npy')
+# my_img = mpimg.imread('static/uploads/anomo/anomo_1_enc.jpg')
+# DecryptionIMIG(323, 131, my_img,enc)
+# plt.imshow(my_img)
+# plt.show()
+
 
 
 

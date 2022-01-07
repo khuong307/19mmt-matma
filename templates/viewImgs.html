@@ -10,84 +10,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body{
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
-            font-family: "Pacifico", sans-serif;
-            font-size: 18px;
-        }
+          height: 100vh;
+          justify-content: center;
+          align-items: center;
+          padding: 10px;
+          background: linear-gradient(135deg, #71b7e6, #39d48c);
+          font-family: "Pacifico", sans-serif;
+          font-size: 18px;
+      }
+      *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow" style="border-radius: 10px">
-    <a class="navbar-brand" href="/">
-        <i class="fa fa-home fa-lg" aria-hidden="true"></i>
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button> 
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#"> Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">Tính năng</a> 
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" style="color: darkorange">Tải ảnh lên.</a>
-                    <a class="dropdown-item" style="color: #0f3596; font-weight: bold">Xem ảnh đã tải lên.</a>
-                    <a class="dropdown-item" style="color: #0aa33a; font-weight: bold">Chia sẻ hình ảnh.</a>
-                </div>
-            </li>
-        </ul>
-                            
-        <ul class="navbar-nav">
-          <li class="nav-item active dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                  Chào,  <b style="color: #0f3596">{{username}}!</b>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="/">
-                      <i class="fa fa-sign-out"></i> Đăng xuất
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow" style="border-radius: 10px" style="padding-top:20px">
+        <a class="navbar-brand" href="/homeLogin">
+            <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> 
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/homeLogin"> Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">Tính năng</a> 
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                        <a class="dropdown-item" style="color: darkorange"href="/uploadImg">Tải ảnh lên.</a>
+                        <a class="dropdown-item" style="color: #0f3596; font-weight: bold" href="/viewImgs">Xem ảnh đã tải lên.</a>
+                    </div>
+                </li>
+            </ul>
+                                
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+                      Chào,  <b style="color: #0f3596">{{username}}!</b>
                   </a>
-              </div>
-          </li>
-        </ul>
-    </div> 
-  </nav>
+                  <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="/">
+                          <i class="fa fa-sign-out"></i> Đăng xuất
+                      </a>
+                  </div>
+              </li>
+            </ul>
+        </div> 
+      </nav>
   <div class="card text mt-4">
     <h4 class="card-header d-flex justify-content-between">
         Ảnh của {{username}}
+        <form action='/downloadAll' method="post">
+            <button class="btn btn-outline-success" type="submit">
+                <i class="fa fa-arrow-down"></i>
+                Tải toàn bộ ảnh
+            </button>
+        </form>
     </h4>
     <div class="card-body">
-            <div class="row">
-                {% for i in range(1, numberofFile + 1) %}
-                    <div class="col-sm-4 mb-3">
-                        <div class="card">
-                            <div id="{{username}}_{{i}}" class="carousel slide" data-ride="carousel">
+        <div class="row">
+            {% for i in range(1, numberofFile + 1) %}
+                <div class="col-sm-4 mb-3">
+                    <div class="card">
+                        <div id="{{username}}_{{i}}" class="carousel slide" data-ride="carousel">
+                            <div>
                                 <div>
-                                    <div>
-                                        <img class="card-img-top" src="static/uploads/{{username}}/{{username}}_{{i}}.jpg">
-                                    </div>
+                                    <img class="card-img-top" src="static/uploads/{{username}}/{{username}}_{{i}}_enc.jpg">
                                 </div>
                             </div>
-    
-                            <div class="card-footer text-muted" style="text-align: center">
-                                <form action='/viewImgs?filename={{username}}_{{i}}.jpg' method="post">
-                                    <button class="btn btn-outline-primary" type="submit">
-                                        <i class="fa fa-arrow-down"></i>
-                                        Tải ảnh
-                                    </button>
-                                </form>
-                            </div>
+                        </div>
+
+                        <div class="card-footer text-muted">
+                            <form action='/viewImgs?filename={{username}}_{{i}}_enc.jpg' method="post">
+                                <button class="btn btn-outline-primary" type="submit">
+                                    <i class="fa fa-arrow-down"></i>
+                                    Tải ảnh gốc
+                                </button>
+                                <a class="nav-link float-right" href="/share?filename={{username}}_{{i}}_enc.jpg">
+                                    <h5><i class="fa fa-share" aria-hidden="true"></i> Chia sẻ</h5>
+                                </a>
+                            </form>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-                </ul>
-            </nav>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
